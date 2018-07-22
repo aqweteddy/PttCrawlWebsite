@@ -1,0 +1,7 @@
+__*/
+*.swp
+venv/
+picture*/
+.vscode/
+.idea/
+.DS*

@@ -1,0 +1,44 @@
+{% extends "base.html" %}
+{% block content %}
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static',filename='styles/mainpage.css') }}">
+    <script type="text/javascript">// <![CDATA[
+    function loading() {
+        $("#loading").show();
+        $("#container").hide();
+    }
+
+    // ]]></script>
+    <div id="loading" style="display:none" align="center">
+        <img src="{{ url_for('static', filename='loading.gif') }}" alt="Loading">
+        <br>
+        正在爬取資料...
+    </div>
+
+    <div class="container" id="container">
+        {% for message in get_flashed_messages(with_categories=True) %}
+            <div class="alert alert-{{ message[0] }}">
+                <button type="button" class="close" data-dismiss="alert">&times;</button>
+                {{ message[1] }}
+            </div>
+        {% endfor %}
+
+        <form action="/page_mode/{{ pid }}" method="POST">
+            看板：
+            <input type="text" name="board">
+            <br> 頁數：
+            <input type="number" name="pages" id="pages" min=1 max=100>
+            <br>
+            <br>
+
+            <input type="radio" name="option" id="no_lim" value="radio0" checked> 不限制 </input>
+            <br>
+            <input type="radio" name="option" id="not_want" value="radio1"> 不想看到 </input>
+            <input type="text" name="text_not_want">
+            <br>
+            <input type="radio" name="option" id="want"> 只想看到 </input>
+            <input type="text" name="text_want">
+            <br>
+            <input type="submit" name="start" value="開始" onclick="loading();">
+        </form>
+    </div>
+{% endblock content %}
