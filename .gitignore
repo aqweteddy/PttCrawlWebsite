@@ -5,3 +5,4 @@ picture*/
 .vscode/
 .idea/
 .DS*
+*.gz

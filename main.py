@@ -1,8 +1,9 @@
-from flask import Flask, flash, render_template, request, redirect, url_for
+from flask import Flask, flash, render_template, request, redirect, url_for,  send_from_directory
 from flask_bootstrap import Bootstrap
 from crawler.crawler import ToolBox, ThreadList
 import random
-import zipfile as zip
+import tarfile
+import os
 
 
 app = Flask(__name__)
@@ -27,9 +28,22 @@ def check_menu(form):
     return True
 
 
+def downloading(tb, pid):
+    for i, j in tb.download_image(pid):
+        yield i, j
+    cur = os.path.dirname(os.path.abspath(__file__))
+    os.chdir(cur)
+    output = '%s/%s.tar.gz' % (cur, pid)
+    source_dir = '%s/pictures%s' % (cur, pid)
+    print(output, source_dir)
+
+    with tarfile.open(output, "w:gz") as tar:
+        tar.add(source_dir, arcname=os.path.basename(source_dir))
+    yield source_dir, output
+
+
 @app.route('/', methods=['GET', 'POST'])
 def index():
-    global PID
     PID = random.randint(0, 100000)
     return redirect(url_for('page_mode', pid=PID))
     # return redirect(url_for('page_mode', ))
@@ -48,7 +62,6 @@ def page_mode(pid=None):
             pages = int(form['pages'].strip())
 
             ToolBox(board=board, pages=pages, title_lim=lim.split(' '), file=str(pid) + '.json')
-            print('----------------------------')
             return redirect(url_for('show_image1', pid=pid))
 
     return render_template('page_mode.html', pid=pid)
@@ -57,20 +70,14 @@ def page_mode(pid=None):
 
 @app.route('/show_image1/<pid>', methods=['GET', 'POST'])
 def show_image1(pid):
-    # tb = ToolBox(json='%s.json' % (pid))
+    tb = ToolBox(jsonf='%s.json' % (pid))
 
     if request.method != 'POST':
-       # return render_template('show_image1.html', data=tb.data.get_img_link(), pid=pid)
-
-        tb = ToolBox(json='97608.json')
-        tmp = []
-        for i, th in enumerate(tb.data):
-            tmp.append(dict(title=th['title'], img_link=th['img_link'], id=i, url=th['url']))
-        return render_template('show_image1.html', data=tmp)
+        return render_template('show_image1.html', data=tb.data.get_img_link(), pid=pid)
 
     form = dict()
     for i in request.form.keys():
-        if i == 'download':
+        if i.find('download') != -1:
             continue
         a = int(i.split('_')[1])
         b = int(i.split('_')[-1])
@@ -86,13 +93,27 @@ def show_image1(pid):
         for i in b:
             tmp_data[-1]['img_link'].append(tb.data[a]['img_link'][i])
     tb.data = ThreadList(tmp_data.copy())
+    tb.save_json('%s.json' % (pid))
+    if 'download_image' in request.form.keys():
+        return redirect(url_for('download', pid=pid))
+    else:
+        return send_from_directory(app.root_path, pid + '.json', as_attachment=True)
 
-    for i, j in tb.download_image(str(pid)):
-        print(i, j)
+
+@app.route('/download/<pid>', methods=['GET', 'POST'])
+def download(pid):
+    # if request.method == 'POST':
+    if True:
+        tb = ToolBox(jsonf='%s.json' % (pid))
+        for i, j in downloading(tb, pid):
+            pass
+        return send_from_directory(app.root_path, pid + '.tar.gz', as_attachment=True)
+
 
 
 if __name__ == '__main__':
     # http_server = WSGIServer(('', 5000), app)
     # http_server.serve_forever()
     # monkey.patch_all()
-    app.run()
+    # gunicorn -b 127.0.0.1:5000 -w 2 main:app --timeout 2000
+    app.run(debug=True)

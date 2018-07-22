@@ -1,6 +1,5 @@
 {% extends "base.html" %}
 {% block content %}
-
     <style type="text/css">
         ul {
             list-style-type: none;
@@ -130,7 +129,10 @@
             <button type="button" class="btn btn-secondary" onclick="all_not_select()">全不選</button>
             <button type="button" class="btn btn-secondary" onclick="all_rev_select()">反向選擇</button>
         </div>
-        <input type="submit" class="btn btn-primary" value="開始下載" name="download">
+        <div class="btn-group" role="group" aria-label="all_download">
+            <input type="submit" class="btn btn-primary" value="下載圖片" name="download_image">
+            <input type="submit" class="btn btn-primary" value="下載json" name="download_json">
+        </div>
         <br><br>
 
         <div class="panel-group" id="accordion">
