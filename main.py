@@ -70,7 +70,9 @@ def page_mode(pid=None):
 
 @app.route('/show_image1/<pid>', methods=['GET', 'POST'])
 def show_image1(pid):
-    tb = ToolBox(jsonf='%s.json' % (pid))
+    cur = os.path.dirname(os.path.abspath(__file__))
+    print(cur)
+    tb = ToolBox(jsonf='%s/crawler/%s.json' % (cur, pid))
 
     if request.method != 'POST':
         return render_template('show_image1.html', data=tb.data.get_img_link(), pid=pid)
@@ -97,7 +99,7 @@ def show_image1(pid):
 
     if 'download_image' in request.form.keys():
         downloading(tb, pid)
-        return redirect(url_for('download', pid=pid))
+        return send_from_directory(app.root_path, pid + '.tar.gz', as_attachment=True)
 
     elif 'download_json' in request.form.keys():
         return send_from_directory(app.root_path, pid + '.json', as_attachment=True)
