@@ -29,17 +29,17 @@ def check_menu(form):
 
 
 def downloading(tb, pid):
-    for i, j in tb.download_image(pid):
-        yield i, j
     cur = os.path.dirname(os.path.abspath(__file__))
-    os.chdir(cur)
-    output = '%s/%s.tar.gz' % (cur, pid)
     source_dir = '%s/pictures%s' % (cur, pid)
+    output = '%s/%s.tar.gz' % (cur, pid)
+    tb.download_image(source_dir)
+    os.chdir(cur)
+
     print(output, source_dir)
 
     with tarfile.open(output, "w:gz") as tar:
         tar.add(source_dir, arcname=os.path.basename(source_dir))
-    yield source_dir, output
+    return source_dir, output
 
 
 @app.route('/', methods=['GET', 'POST'])
@@ -94,22 +94,21 @@ def show_image1(pid):
             tmp_data[-1]['img_link'].append(tb.data[a]['img_link'][i])
     tb.data = ThreadList(tmp_data.copy())
     tb.save_json('%s.json' % (pid))
+
     if 'download_image' in request.form.keys():
+        downloading(tb, pid)
         return redirect(url_for('download', pid=pid))
-    else:
+
+    elif 'download_json' in request.form.keys():
         return send_from_directory(app.root_path, pid + '.json', as_attachment=True)
 
 
 @app.route('/download/<pid>', methods=['GET', 'POST'])
 def download(pid):
-    # if request.method == 'POST':
-    if True:
-        tb = ToolBox(jsonf='%s.json' % (pid))
-        for i, j in downloading(tb, pid):
-            pass
+    if request.method == 'GET':
         return send_from_directory(app.root_path, pid + '.tar.gz', as_attachment=True)
-
-
+    else:
+        return redirect(url_for('show_image1', pid=pid))
 
 if __name__ == '__main__':
     # http_server = WSGIServer(('', 5000), app)
