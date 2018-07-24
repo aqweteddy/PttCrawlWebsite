@@ -1,5 +1,6 @@
 __*/
 *.swp
+tmp/
 venv/
 picture*/
 .vscode/
