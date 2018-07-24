@@ -3,6 +3,7 @@ from flask_bootstrap import Bootstrap
 from crawler.crawler import ToolBox, ThreadList
 import random
 import tarfile
+import time
 import os
 
 
@@ -28,16 +29,17 @@ def check_menu(form):
     return True
 
 
-
-
 @app.route('/', methods=['GET', 'POST'])
 def index():
     PID = random.randint(0, 100000)
     return redirect(url_for('page_mode', pid=PID))
 
 
+@app.route('/page_mode', methods=['POST', 'GET'])
 @app.route('/page_mode/<pid>', methods=['POST', 'GET'])
 def page_mode(pid=None):
+    if not pid:
+        return redirect(url_for('index'))
     folder = os.path.split(os.path.realpath(__file__))[0] + '/tmp/' + pid
 
     if request.method == 'POST':
@@ -50,7 +52,7 @@ def page_mode(pid=None):
             board = form['board'].strip()
             pages = int(form['pages'].strip())
 
-            ToolBox(board=board, pages=pages, title_lim=lim.split(' '), file=folder + '/' + pid + '.json')
+            ToolBox(board=board, pages=pages, title_lim=lim.split(' '), file=folder + '/ori' + '.json')
             return redirect(url_for('show_image1', pid=pid))
 
     return render_template('page_mode.html', pid=pid)
@@ -60,9 +62,8 @@ def page_mode(pid=None):
 @app.route('/show_image1/<pid>', methods=['GET', 'POST'])
 def show_image1(pid):
     folder = os.path.split(os.path.realpath(__file__))[0] + '/tmp/' + pid
-    print(folder)
     # tb = ToolBox(jsonf='%s/%s.json' % (cur, pid))
-    tb = ToolBox(jsonf="%s/%s.json" % (folder, pid))
+    tb = ToolBox(jsonf="%s/%s.json" % (folder, 'ori'))
     if request.method != 'POST':
         return render_template('show_image1.html', data=tb.data.get_img_link(), pid=pid)
 
@@ -84,26 +85,10 @@ def show_image1(pid):
         for i in b:
             tmp_data[-1]['img_link'].append(tb.data[a]['img_link'][i])
     tb.data = ThreadList(tmp_data.copy())
-    tb.save_json('%s/%s_1.json' % (folder, pid))
+    tb.save_json('%s/%s.json' % (folder, pid))
 
     if 'download_image' in request.form.keys():
-        def downloading(tb, pid):
-            folder = os.path.split(os.path.realpath(__file__))[0] + '/tmp/' + pid
-
-            source_dir = '%s/pictures%s' % (folder, pid)
-            output = '%s/%s.tar.gz' % (folder, pid)
-
-            for i, j in tb.download_image(source_dir):
-                yield str(i), j
-
-            print(output, source_dir)
-            with tarfile.open(output, "w:gz") as tar:
-                tar.add(source_dir, arcname=os.path.basename(source_dir))
-            yield source_dir, output
-
-        for i, j in downloading(tb, pid):
-            pass
-        return send_from_directory(folder, pid + '.tar.gz', as_attachment=True)
+        return redirect(url_for('download', pid=pid))
 
     elif 'download_json' in request.form.keys():
         return send_from_directory(folder, pid + '.json', as_attachment=True)
@@ -111,10 +96,39 @@ def show_image1(pid):
 
 @app.route('/download/<pid>', methods=['GET', 'POST'])
 def download(pid):
-    if request.method == 'GET':
-        return send_from_directory(app.root_path, pid + '.tar.gz', as_attachment=True)
-    else:
+    folder = os.path.split(os.path.realpath(__file__))[0] + '/tmp/' + pid
+
+    if request.method != 'POST':
+        return render_template('download.html', pid=pid)
+    if 'start_download' in request.form.keys():
+        return send_from_directory(folder, pid + '.tar.gz', as_attachment=True)
+    elif 'json_download' in request.form.keys():
+        return send_from_directory(folder, pid + '.json', as_attachment=True)
+    elif 'prev_page' in request.form.keys():
         return redirect(url_for('show_image1', pid=pid))
+
+
+@app.route('/progress/<pid>', methods=['GET', 'POST'])
+def progress(pid):
+    folder = os.path.split(os.path.realpath(__file__))[0] + '/tmp/' + pid
+    tb = ToolBox(jsonf="%s/%s.json" % (folder, pid))
+
+    def downloading():
+        source_dir = '%s/pictures%s' % (folder, pid)
+        output = '%s/%s.tar.gz' % (folder, pid)
+        num = len(tb.data)
+        i = 0
+        for i, j in tb.download_image(source_dir):
+            percent = int(i / (num + 2) * 100)
+            yield 'data:' + str('%d' % (percent))+'\n\n'
+        yield 'data:'+str(int((i+1)/(num+2) * 100)) + '\n\n'
+        with tarfile.open(output, "w:gz") as tar:
+            tar.add(source_dir, arcname=os.path.basename(source_dir))
+        time.sleep(2)
+        yield 'data:100\n\n'
+
+    return Response(downloading(), mimetype='text/event-stream')
+
 
 if __name__ == '__main__':
     # http_server = WSGIServer(('', 5000), app)
