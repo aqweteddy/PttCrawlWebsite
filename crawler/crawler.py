@@ -38,8 +38,8 @@ class ToolBox:
                     com += "%s," % (str(lim))
                 com += '" '
             print('Command: ' + com)
-            os.system(f'''rm -f {file}''')
-            os.system(f'''{com}''')
+            os.system(f'rm -f {file}')
+            os.system(f'{com}')
             os.chdir('..')
         else:
             file = jsonf
@@ -91,9 +91,9 @@ class ToolBox:
 
 class ToolBoxTextAnalysis(ToolBox):
     def cut_text(self):
-        '''
+        """
         Use Jieba to cut text
-        '''
+        """
         jb.set_dictionary('./dict.txt.big')
         jb.load_userdict('./ptt_custom.dict')
         res = []
