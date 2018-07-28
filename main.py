@@ -154,4 +154,5 @@ if __name__ == '__main__':
     # http_server.serve_forever()
     # monkey.patch_all()
     # gunicorn -b 127.0.0.1:5000 -w 2 main:app --timeout 2000
-    app.run(debug=True)
+    # app.run(debug=True)
+    app.run()
