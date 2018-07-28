@@ -1,10 +1,10 @@
-{% extends base.html %}
+{% extends 'base.html' %}
 
-{% block title %} Page not found {% endblock %}
+{% block title %} Page Not Found {% endblock %}
 
 {% block content %}
-    <div class="container">
+    <div class="container" align="center">
         <h4>找不到此頁面</h4>
-        <h4><a href="{{ url_for('index') }}"></a>點此回主頁</h4>
+        <a href="{{ url_for('index') }}" class="btn btn-primary">點我回主頁</a>
     </div>
 {% endblock %}

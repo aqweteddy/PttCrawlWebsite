@@ -1,5 +1,6 @@
 from flask import Flask, flash, render_template, request, redirect, url_for,  send_from_directory, Response
 from flask_bootstrap import Bootstrap
+from flask_markdown import markdown
 from crawler.crawler import ToolBox, ThreadList
 import random
 import tarfile
@@ -8,6 +9,7 @@ import os
 
 
 app = Flask(__name__)
+markdown(app)
 bootstrap = Bootstrap(app)
 app.secret_key = 'super secret key'
 app.config['SESSION_TYPE'] = 'filesystem'
@@ -30,9 +32,15 @@ def check_menu(form):
 
 
 @app.route('/', methods=['GET', 'POST'])
+@app.route('/index', methods=['GET', 'POST'])
 def index():
-    PID = random.randint(0, 100000)
-    return redirect(url_for('page_mode', pid=PID))
+    if request.method == 'POST':
+
+        PID = random.randint(0, 100000)
+        if 'btn_page_mode' in request.form.keys():
+            return redirect(url_for('page_mode', pid=str(PID)))
+
+    return render_template('index.html')
 
 
 @app.route('/page_mode', methods=['POST', 'GET'])
@@ -60,7 +68,11 @@ def page_mode(pid=None):
 
 
 @app.route('/show_image1/<pid>', methods=['GET', 'POST'])
-def show_image1(pid):
+@app.route('/show_image1', methods=['GET', 'POST'])
+def show_image1(pid = None):
+    if not pid:
+        return redirect(url_for('index'))
+
     folder = os.path.split(os.path.realpath(__file__))[0] + '/tmp/' + pid
     # tb = ToolBox(jsonf='%s/%s.json' % (cur, pid))
     tb = ToolBox(jsonf="%s/%s.json" % (folder, 'ori'))
@@ -94,8 +106,11 @@ def show_image1(pid):
         return send_from_directory(folder, pid + '.json', as_attachment=True)
 
 
+@app.route('/download', methods=['GET', 'POST'])
 @app.route('/download/<pid>', methods=['GET', 'POST'])
-def download(pid):
+def download(pid=None):
+    if not pid:
+        return redirect(url_for('index'))
     folder = os.path.split(os.path.realpath(__file__))[0] + '/tmp/' + pid
 
     if request.method != 'POST':
@@ -129,6 +144,10 @@ def progress(pid):
 
     return Response(downloading(), mimetype='text/event-stream')
 
+
+@app.errorhandler(404)
+def page_not_found(e):
+    return render_template('404.html'), 404
 
 if __name__ == '__main__':
     # http_server = WSGIServer(('', 5000), app)

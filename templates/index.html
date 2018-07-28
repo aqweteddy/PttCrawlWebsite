@@ -1,7 +1,21 @@
 {% extends "base.html" %}
 {% block content %}
     <div class="container" align="center">
-        <input type="submit" value="頁數模式" name="page_mode_button">
-        <a href="page_mode">頁數模式</a>
+        {% markdown %}
+            歡迎使用 Ptt 圖片下載器
+            ======================
+            #### 可以根據不同需求下載 Ptt 上的圖片或是 json 檔
+            1. Page Mode: 根據頁數來指定爬文範圍
+            2. json Mode: 由客戶端上傳的 json 檔來進行圖片選擇
+
+
+
+        如果使用上有任何問題、意見、bug，可以在 github 上發 issue 給我
+        或是寄 mail 到 aqweteddy@csie.io，請以 [Pcw] 問題描述 為標題，最好能附上螢幕截圖
+        謝謝
+        {% endmarkdown %}
+        <form action="/index" method="POST">
+            <input type="submit" class="btn btn-primary" name="btn_page_mode" value="點此進入頁數模式">
+        </form>
     </div>
 {% endblock %}
