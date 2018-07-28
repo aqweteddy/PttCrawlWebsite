@@ -1,3 +1,5 @@
+# coding:utf-8
+
 import scrapy
 from scrapy.selector import Selector
 from ptt_crawl.items import PttCrawlItem
