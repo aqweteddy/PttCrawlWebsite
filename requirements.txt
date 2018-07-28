@@ -33,6 +33,7 @@ pyasn1-modules==0.2.2
 pycparser==2.18
 PyDispatcher==2.0.5
 PyHamcrest==1.9.0
+pylint==2.0.0
 pyOpenSSL==18.0.0
 queuelib==1.5.0
 requests==2.19.1
