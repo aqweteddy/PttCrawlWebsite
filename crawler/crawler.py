@@ -40,7 +40,7 @@ class ToolBox:
                     com += "%s," % (str(lim))
                 com += '" '
             print('Command: ' + com)
-            os.system('rm -f %' % {file})
+            os.system('rm -f %' % (file))
             os.system('%' % (com))
             os.chdir('..')
         else:
