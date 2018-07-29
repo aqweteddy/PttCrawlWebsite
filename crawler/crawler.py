@@ -40,8 +40,8 @@ class ToolBox:
                     com += "%s," % (str(lim))
                 com += '" '
             print('Command: ' + com)
-            os.system('rm -f %' % (file))
-            os.system('%' % (com))
+            os.system('rm -f %'.format(file))
+            os.system('%'.format(com))
             os.chdir('..')
         else:
             file = jsonf
