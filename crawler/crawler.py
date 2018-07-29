@@ -29,6 +29,7 @@ class ToolBox:
     def __init__(self, board='Gossiping', pages=1, file='tmp.json', title_lim=[], jsonf=None):
         if not jsonf:
             os.chdir(os.path.split(os.path.realpath(__file__))[0])
+            print(os.getcwd())
             com = 'scrapy crawl ptt '
             com += '-o %s ' % (file)
             com += '-a pages=%d ' % (pages)
@@ -40,8 +41,8 @@ class ToolBox:
                     com += "%s," % (str(lim))
                 com += '" '
             print('Command: ' + com)
-            os.system('rm -f %'.format(file))
-            os.system('%'.format(com))
+            os.system('rm -f {}'.format(file))
+            os.system('{}'.format(com))
             os.chdir('..')
         else:
             file = jsonf

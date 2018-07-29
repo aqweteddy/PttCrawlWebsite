@@ -1,4 +1,5 @@
-from flask import Flask, flash, render_template, request, redirect, url_for,  send_from_directory, Response
+# coding:utf-8
+from flask import Flask, flash, render_template, request, redirect, url_for, send_from_directory, Response
 from flask_bootstrap import Bootstrap
 from flask_markdown import markdown
 from crawler.crawler import ToolBox, ThreadList
@@ -6,7 +7,6 @@ import random
 import tarfile
 import time
 import os
-
 
 app = Flask(__name__)
 markdown(app)
@@ -60,7 +60,7 @@ def page_mode(pid=None):
             board = form['board'].strip()
             pages = int(form['pages'].strip())
 
-            ToolBox(board=board, pages=pages, title_lim=lim.split(' '), file=folder + '/ori' + '.json')
+            ToolBox(board=board, pages=pages, title_lim=lim.split(' '), file=folder + '/ori.json')
             return redirect(url_for('show_image1', pid=pid))
 
     return render_template('page_mode.html', pid=pid)
@@ -69,7 +69,7 @@ def page_mode(pid=None):
 
 @app.route('/show_image1/<pid>', methods=['GET', 'POST'])
 @app.route('/show_image1', methods=['GET', 'POST'])
-def show_image1(pid = None):
+def show_image1(pid=None):
     if not pid:
         return redirect(url_for('index'))
 
@@ -135,8 +135,8 @@ def progress(pid):
         i = 0
         for i, j in tb.download_image(source_dir):
             percent = int(i / (num + 2) * 100)
-            yield 'data:' + str('%d' % (percent))+'\n\n'
-        yield 'data:'+str(int((i+1)/(num+2) * 100)) + '\n\n'
+            yield 'data:' + str('%d' % (percent)) + '\n\n'
+        yield 'data:' + str(int((i + 1) / (num + 2) * 100)) + '\n\n'
         with tarfile.open(output, "w:gz") as tar:
             tar.add(source_dir, arcname=os.path.basename(source_dir))
         time.sleep(2)
@@ -148,6 +148,7 @@ def progress(pid):
 @app.errorhandler(404)
 def page_not_found(e):
     return render_template('404.html'), 404
+
 
 if __name__ == '__main__':
     # http_server = WSGIServer(('', 5000), app)
