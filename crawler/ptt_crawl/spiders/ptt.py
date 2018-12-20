@@ -64,8 +64,11 @@ class PttSpiderByPage(scrapy.Spider):
                 yield scrapy.Request(url=url, cookies={'over18': '1'}, callback=self.parse)
 
     def parse_post(self, resp):
-        tmp = resp.xpath(
-            '//meta[@property="og:title"]/@content')[0].extract()
+
+        try:
+            tmp = resp.xpath(
+                '//meta[@property="og:title"]/@content')[0].extract()
+
         try:
             self.item['title'] = tmp
         except IndexError:
