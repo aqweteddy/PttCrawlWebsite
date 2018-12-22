@@ -7,6 +7,10 @@ import random
 import tarfile
 import time
 import os
+from flask_nav import Nav
+from flask_nav.elements import Navbar, View
+
+
 
 app = Flask(__name__)
 markdown(app)
@@ -14,6 +18,22 @@ bootstrap = Bootstrap(app)
 app.secret_key = 'super secret key'
 app.config['SESSION_TYPE'] = 'filesystem'
 
+
+
+nav = Nav()
+
+@nav.navigation()
+def mynavbar():
+    return Navbar(
+        'Ptt 圖片爬取器',
+        View('Home', 'index'),
+        View('圖片模式', 'page_mode'),
+        View('關於我', 'aboutme')
+    )
+
+# ...
+
+nav.init_app(app)
 
 def check_menu(form):
     if form['option'] == 'radio1' and form['text_not_want'].strip() == '':
@@ -35,21 +55,17 @@ def check_menu(form):
 @app.route('/index', methods=['GET', 'POST'])
 def index():
     if request.method == 'POST':
-
         PID = random.randint(0, 100000)
         if 'btn_page_mode' in request.form.keys():
-            return redirect(url_for('page_mode', pid=str(PID)))
-
+            # return redirect(url_for('page_mode', pid=str(PID)))
+            return redirect(url_for('page_mode'))
     return render_template('index.html')
 
 
 @app.route('/page_mode', methods=['POST', 'GET'])
-@app.route('/page_mode/<pid>', methods=['POST', 'GET'])
-def page_mode(pid=None):
-    if not pid:
-        return redirect(url_for('index'))
+def page_mode():
+    pid = str(random.randint(0, 100000))
     folder = os.path.split(os.path.realpath(__file__))[0] + '/tmp/' + pid
-
     if request.method == 'POST':
         form = request.form
         if check_menu(form):
@@ -77,7 +93,7 @@ def show_image1(pid=None):
     # tb = ToolBox(jsonf='%s/%s.json' % (cur, pid))
     tb = ToolBox(jsonf="%s/%s.json" % (folder, 'ori'))
     if request.method != 'POST':
-        return render_template('show_image1.html', data=tb.data.get_img_link(), pid=pid)
+        return render_template('show_image1.html', data=tb.data.get_data(), pid=pid)
 
     form = dict()
     for i in request.form.keys():
@@ -143,6 +159,10 @@ def progress(pid):
         yield 'data:100\n\n'
 
     return Response(downloading(), mimetype='text/event-stream')
+
+@app.route('/aboutme', methods=['GET'])
+def aboutme():
+    return render_template('aboutme.html')
 
 
 @app.errorhandler(404)

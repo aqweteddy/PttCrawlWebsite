@@ -1,11 +1,7 @@
 {% extends "base.html" %}
 
 {% block content %}
-    <script src="//ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
-    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap.min.css">
-    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.2.0/js/bootstrap.min.js"></script>
     <script>
-
         var source = new EventSource("/progress/{{ pid|safe }}");
         source.onmessage = function (event) {
             $("#down_image").attr('disabled',true);
@@ -19,7 +15,14 @@
             }
         }
     </script>
-
+    <nav aria-label="breadcrumb" style="margin-top: -20px">
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item"><a href="/index">Home</a> </li>
+            <li class="breadcrumb-item"><a href="/page_mode">Page Mode</a> </li>
+            <li class="breadcrumb-item"><a href="/show_image1/{{ pid|safe }}"> Picking Pictures </a> </li>
+            <li class="breadcrumb-item active" aria-current="page">Download</li>
+        </ol>
+    </nav>
     <div class="container">
         <div align="center">
             <div class="progress" style="width: 50%; margin: 50px;" align="center">

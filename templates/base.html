@@ -1,27 +1,13 @@
-<!DOCTYPE html>
 {% extends "bootstrap/base.html" %}
 {% block title %} Ptt 圖片批量下載 {% endblock title %}
-{% block navbar %}
-<script type=text/javascript src="{{url_for('static', filename='jquery.js') }}"></script>
+{% block script %}
+    <script type=text/javascript src="{{ url_for('static', filename='jquery.js') }}"></script>
+{% endblock %}
 
-<div class="navbar navbar-inverse" role="navigation">
-    <div class="container">
-        <div class="navbar-header">
-            <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
-                <span class="sr-only">Toggle navigation</span>
-                <span class="icon-bar"></span>
-                <span class="icon-bar"></span>
-                <span class="icon-bar"></span>
-            </button>
-            <a class="navbar-brand" href="/">Home</a>
-        </div>
-        <div class="navbar-collapse collapse">
-            <ul class="nav navbar-nav">
-                <li>
-                    <a href="/page_mode">頁數模式</a>
-                </li>
-            </ul>
-        </div>
-    </div>
-</div>
+{% block navbar %}
+        {{ nav.mynavbar.render() }}
+{% endblock navbar %}
+
+{% block content %}
+
 {% endblock %}

@@ -64,12 +64,9 @@ class PttSpiderByPage(scrapy.Spider):
                 yield scrapy.Request(url=url, cookies={'over18': '1'}, callback=self.parse)
 
     def parse_post(self, resp):
-
         try:
             tmp = resp.xpath(
                 '//meta[@property="og:title"]/@content')[0].extract()
-
-        try:
             self.item['title'] = tmp
         except IndexError:
             self.item['title'] = ""
@@ -92,11 +89,13 @@ class PttSpiderByPage(scrapy.Spider):
             tmp = link.extract()
             if '.jpg' in tmp.split('/')[-1] or '.png' in tmp.split('/')[-1] \
                     or '.gif' in tmp.split('/')[-1]:
+                tmp.replace('https', 'http')
                 self.item['img_link'].append(tmp)
             elif 'imgur' in tmp:
                 tmp = 'http://i.imgur.com/' + link.extract().split('/')[-1]
                 if '.jpg' not in tmp:
                     tmp += '.jpg'
+                tmp.replace('https', 'http')
                 self.item['img_link'].append(tmp)
 
 

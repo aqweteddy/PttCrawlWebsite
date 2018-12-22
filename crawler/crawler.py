@@ -10,14 +10,15 @@ class ThreadList(list):
     def find_comment_by_user(self, pat):
         return [com for th in self for com in th['comment'] if pat in com['user']]
 
-    def get_img_link(self):
+    def get_data(self):
         """
         return a list (title, img_link)
         -> [0] : title
         -> [1] : list of img_link
         -> [2] : URL
+        -> [3] : text
         """
-        return [{'title': th['title'], 'img_link': th['img_link'], 'id': j, 'url': th['url']}
+        return [{'title': th['title'], 'img_link': th['img_link'], 'id': j, 'url': th['url'], 'text': th['text']}
                 for j, th in enumerate(self)]
         # return [(th['title'], th['img_link'], th['url'] for th in self]
 
@@ -149,8 +150,8 @@ class ToolBoxTextAnalysis(ToolBox):
 
 
 if __name__ == '__main__':
-    a = ToolBoxTextAnalysis(json='beauty.json')
-    # a = ToolBoxTextAnalysis(board='Gossiping', pages=2, file='gossip.json', title_lim=['-', '公告'])
+    # a = ToolBoxTextAnalysis(json='beauty.json')
+    a = ToolBoxTextAnalysis(board='Gossiping', pages=2, title_lim=['-', '公告'])
     # a = ToolBoxTextAnalysis(board='Baseball', pages=2, file='baseball.json', title_lim=['-', '公告'])
     # a = ToolBoxTextAnalysis(board='Beauty', pages=2, file='beauty.json', title_lim=['-', '公告', '帥哥'])
     for i in a.download_image():
