@@ -77,7 +77,7 @@ class ToolBox:
         """
         if not os.path.exists(name):
             os.mkdir(name)
-        for num, th in enumerate(self.data.get_img_link()):
+        for num, th in enumerate(self.data.get_data()):
             dirr = name + '/' + th['title'].replace('/', '.')
 
             if not os.path.exists(dirr):

@@ -31,7 +31,6 @@ def mynavbar():
         View('關於我', 'aboutme')
     )
 
-# ...
 
 nav.init_app(app)
 
@@ -57,7 +56,6 @@ def index():
     if request.method == 'POST':
         PID = random.randint(0, 100000)
         if 'btn_page_mode' in request.form.keys():
-            # return redirect(url_for('page_mode', pid=str(PID)))
             return redirect(url_for('page_mode'))
     return render_template('index.html')
 
@@ -84,7 +82,6 @@ def page_mode():
 
 
 @app.route('/show_image1/<pid>', methods=['GET', 'POST'])
-@app.route('/show_image1', methods=['GET', 'POST'])
 def show_image1(pid=None):
     if not pid:
         return redirect(url_for('index'))
@@ -122,7 +119,6 @@ def show_image1(pid=None):
         return send_from_directory(folder, pid + '.json', as_attachment=True)
 
 
-@app.route('/download', methods=['GET', 'POST'])
 @app.route('/download/<pid>', methods=['GET', 'POST'])
 def download(pid=None):
     if not pid:
@@ -159,6 +155,7 @@ def progress(pid):
         yield 'data:100\n\n'
 
     return Response(downloading(), mimetype='text/event-stream')
+
 
 @app.route('/aboutme', methods=['GET'])
 def aboutme():

@@ -1,13 +1,23 @@
 {% extends "base.html" %}
 {% block content %}
-    <div id="container">
-        <a href="http://github.com/aqweteddy/PttCrawlWebsite">github 連結</a>
+    <style type="text/css">
+    .center {
+        position: absolute;
+        top: calc(50% - 50px / 2); /* height divided by 2*/
+        left: 30%; /* width divided by 2*/
+    }
+    </style>
+    <nav aria-label="breadcrumb" style="margin-top: -20px">
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item active" aria-current="page">About Me</li>
+        </ol>
+    </nav>
+    <div id="container" class="center">
+    {% markdown %}
+        * 作者：aqweteddy@github<br>
+        * <a href="http://github.com/aqweteddy/PttCrawlWebsite">github 連結</a><br>
+        * 如果使用上有任何問題、意見、bug，可以在 github 上發 issue 給我 <br>
+        * 或是寄 mail 到 aqweteddy@csie.io，請以 [Pcw] 問題描述 為標題，最好能附上螢幕截圖<br>
+    {% endmarkdown %}
     </div>
-{% markdown %}
-    #### 可以根據不同需求下載 Ptt 上的圖片或是 json 檔
-    * Page Mode: 根據頁數來指定爬文範圍
-    如果使用上有任何問題、意見、bug，可以在 github 上發 issue 給我 <br>
-    或是寄 mail 到 aqweteddy@csie.io，請以 [Pcw] 問題描述 為標題，最好能附上螢幕截圖<br>
-    謝謝
-{% endmarkdown %}
 {% endblock %}
