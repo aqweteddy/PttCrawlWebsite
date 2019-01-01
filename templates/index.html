@@ -1,13 +1,17 @@
 {% extends "base.html" %}
 {% block content %}
+{#    navbar#}
     <nav aria-label="breadcrumb" style="margin-top: -20px">
         <ol class="breadcrumb">
             <li class="breadcrumb-item active" aria-current="page">Home</li>
         </ol>
     </nav>
-    <div class="container" align="center">
+<div class="container">
+    <div align="center">
         <form action="/index" method="POST">
             <input type="submit" class="btn btn-primary" name="btn_page_mode" value="點此進入頁數模式">
+            <input type="submit" class="btn btn-primary" name="btn_pid_mode" value="點此進入 pid 模式">
         </form>
     </div>
+</div>
 {% endblock %}

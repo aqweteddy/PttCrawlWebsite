@@ -1,0 +1,13 @@
+{% extends "base.html" %}
+{% block content %}
+<nav aria-label="breadcrumb" style="margin-top: -20px">
+    <ol class="breadcrumb">
+        <li class="breadcrumb-item"><a href="/index">Home</a></li>
+        <li class="breadcrumb-item active" aria-current="page">Pid Mode</li>
+    </ol>
+    <form action="/pid_mode" method="post">
+        <input type="text" name="pid">
+        <input type="submit" name="goto_pid" class="btn btn-primary" value="確認">
+    </form>
+</nav>
+{% endblock %}

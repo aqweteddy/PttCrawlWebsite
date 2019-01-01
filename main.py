@@ -57,6 +57,8 @@ def index():
         PID = random.randint(0, 100000)
         if 'btn_page_mode' in request.form.keys():
             return redirect(url_for('page_mode'))
+        if 'btn_pid_mode' in request.form.keys():
+            return redirect(url_for('pid_mode'))
     return render_template('index.html')
 
 
@@ -80,6 +82,13 @@ def page_mode():
     return render_template('page_mode.html', pid=pid)
     # return render_template('page_mode.html')
 
+
+@app.route('/pid_mode', methods=['GET', 'POST'])
+def pid_mode():
+    if 'goto_pid' in request.form.keys():
+        return redirect(url_for('show_image1', pid=request.form['pid']))
+    else:
+        return render_template('pid_mode.html')
 
 @app.route('/show_image1/<pid>', methods=['GET', 'POST'])
 def show_image1(pid=None):
