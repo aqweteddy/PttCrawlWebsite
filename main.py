@@ -14,16 +14,18 @@ import tarfile
 from crawler.crawler import ToolBox, ThreadList
 
 
+# settings
 app = Flask(__name__)
 markdown(app)
 bootstrap = Bootstrap(app)
 app.secret_key = 'super secret key'
 app.config['SESSION_TYPE'] = 'filesystem'
 app.config['UPLOAD_FOLDER'] = "tmp"
-MAX_CONTENT_LENGTH = 5 * 1024 * 1024  # 16MB
+MAX_CONTENT_LENGTH = 5 * 1024 * 1024  # Upload json length (5mb)
 
-
+# nav Bar
 nav = Nav()
+
 
 @nav.navigation()
 def mynavbar():
@@ -37,39 +39,46 @@ def mynavbar():
 
 nav.init_app(app)
 
-def check_menu(form):
-    if form['option'] == 'radio1' and form['text_not_want'].strip() == '':
-        flash('請輸入不想要的標題內容', 'danger')
-        return False
-    if form['option'] == 'radio2' and form['text_want'].strip() == '':
-        flash('請輸入想要的標題內容', 'danger')
-        return False
-    if form['board'].strip() == '':
-        flash('請輸入看板名稱', 'danger')
-        return False
-    if form['pages'].strip() == '':
-        flash('請輸入頁數', 'danger')
-        return False
-    return True
 
-
+# home page
 @app.route('/', methods=['GET', 'POST'])
 @app.route('/index', methods=['GET', 'POST'])
 def index():
     if request.method == 'POST':
-        PID = random.randint(0, 100000)
+        # to page mode
         if 'btn_page_mode' in request.form.keys():
             return redirect(url_for('page_mode'))
+        # to pid mode
         if 'btn_pid_mode' in request.form.keys():
             return redirect(url_for('pid_mode'))
+        # to upload json mode
         if 'btn_upload_json' in request.form.keys():
             return redirect(url_for('upload_json'))
     return render_template('index.html')
 
 
+# page mode
 @app.route('/page_mode', methods=['POST', 'GET'])
 def page_mode():
+    def check_menu(form):
+        # check input legal
+        if form['option'] == 'radio1' and form['text_not_want'].strip() == '':
+            flash('請輸入不想要的標題內容', 'danger')
+            return False
+        if form['option'] == 'radio2' and form['text_want'].strip() == '':
+            flash('請輸入想要的標題內容', 'danger')
+            return False
+        if form['board'].strip() == '':
+            flash('請輸入看板名稱', 'danger')
+            return False
+        if form['pages'].strip() == '':
+            flash('請輸入頁數', 'danger')
+            return False
+        return True
+
+    # get pid
     pid = str(random.randint(0, 100000))
+    # get folder
     folder = os.path.split(os.path.realpath(__file__))[0] + '/tmp/' + pid
     if request.method == 'POST':
         form = request.form
@@ -81,6 +90,7 @@ def page_mode():
             board = form['board'].strip()
             pages = int(form['pages'].strip())
 
+            # crawling, save json file.
             ToolBox(board=board, pages=pages, title_lim=lim.split(' '), file=folder + '/ori.json')
             return redirect(url_for('show_image1', pid=pid))
 
@@ -115,6 +125,7 @@ def upload_json():
         return render_template('upload_json.html')
 
 
+# page pid mode
 @app.route('/pid_mode', methods=['POST', 'GET'])
 def pid_mode():
     if 'goto_pid' in request.form.keys():
@@ -123,17 +134,20 @@ def pid_mode():
         return render_template('pid_mode.html')
 
 
+# page show image
 @app.route('/show_image1/<pid>', methods=['GET', 'POST'])
 def show_image1(pid=None):
     if not pid:
         return redirect(url_for('index'))
 
+    # get json folder
     folder = os.path.split(os.path.realpath(__file__))[0] + '/tmp/' + pid
-    # tb = ToolBox(jsonf='%s/%s.json' % (cur, pid))
+    # create Class ToolBox use json mode
     tb = ToolBox(jsonf="%s/%s.json" % (folder, 'ori'))
     if request.method != 'POST':
         return render_template('show_image1.html', data=tb.data.get_data(), pid=pid)
 
+    # split require
     form = dict()
     for i in request.form.keys():
         if i.find('download') != -1:
@@ -145,6 +159,7 @@ def show_image1(pid=None):
         else:
             form[a] = [b]
 
+    # save new .json
     tmp_data = []
     for a, b in form.items():
         tmp_data.append(tb.data[a].copy())
@@ -154,56 +169,77 @@ def show_image1(pid=None):
     tb.data = ThreadList(tmp_data.copy())
     tb.save_json('%s/%s.json' % (folder, pid))
 
+    # download image button
     if 'download_image' in request.form.keys():
         return redirect(url_for('download', pid=pid))
 
+    # download json button
     elif 'download_json' in request.form.keys():
         return send_from_directory(folder, pid + '.json', as_attachment=True)
 
 
+# download progress page
 @app.route('/download/<pid>', methods=['GET', 'POST'])
 def download(pid=None):
     if not pid:
         return redirect(url_for('index'))
+    # get folder
     folder = os.path.split(os.path.realpath(__file__))[0] + '/tmp/' + pid
 
     if request.method != 'POST':
         return render_template('download.html', pid=pid)
+    # download image
     if 'start_download' in request.form.keys():
         return send_from_directory(folder, pid + '.tar.gz', as_attachment=True)
+    # download json
     elif 'json_download' in request.form.keys():
         return send_from_directory(folder, pid + '.json', as_attachment=True)
+    # previous page
     elif 'prev_page' in request.form.keys():
         return redirect(url_for('show_image1', pid=pid))
 
 
+# progress bar port
 @app.route('/progress/<pid>', methods=['GET', 'POST'])
 def progress(pid):
+    # get path
     folder = os.path.split(os.path.realpath(__file__))[0] + '/tmp/' + pid
+    # create Class ToolBox
     tb = ToolBox(jsonf="%s/%s.json" % (folder, pid))
 
     def downloading():
+        # source folder
         source_dir = '%s/pictures%s' % (folder, pid)
+        # target file
         output = '%s/%s.tar.gz' % (folder, pid)
+        # total length of select data
         num = len(tb.data)
         i = 0
+
+        # download image to server
         for i, j in tb.download_image(source_dir):
+            # get percentage
             percent = int(i / (num + 2) * 100)
             yield 'data:' + str('%d' % (percent)) + '\n\n'
         yield 'data:' + str(int((i + 1) / (num + 2) * 100)) + '\n\n'
+
+        # zip the file
         with tarfile.open(output, "w:gz") as tar:
             tar.add(source_dir, arcname=os.path.basename(source_dir))
         time.sleep(2)
         yield 'data:100\n\n'
 
+    # connect to progress bar
     return Response(downloading(), mimetype='text/event-stream')
 
 
+# page about me
 @app.route('/aboutme', methods=['GET'])
 def aboutme():
     return render_template('aboutme.html')
 
 
+# page 404
 @app.errorhandler(404)
 def page_not_found(e):
     return render_template('404.html'), 404
