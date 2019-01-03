@@ -1,0 +1,25 @@
+{% extends "base.html" %}
+<style type="text/css">
+    .center {
+        position: absolute;
+        top: 50px; /* height divided by 2*/
+        left: 50px /* width divided by 2*/
+    }
+</style>
+{% block content %}
+    <div class="container">
+        {% for message in get_flashed_messages(with_categories=True) %}
+            <div class="alert alert-{{ message[0] }}">
+                <button type="button" class="close" data-dismiss="alert">&times;</button>
+                {{ message[1] }}
+            </div>
+        {% endfor %}
+        <form method="POST" enctype="multipart/form-data">
+            {#        <input type="file" name="file">#}
+            <label class="file-upload btn btn-primary center">
+                Browse file <input type="file" name="file">
+            </label><br>
+            <input type="submit" value="Upload" name="upload" class="btn btn-primary center">
+        </form>
+    </div>
+{% endblock %}

@@ -2,14 +2,16 @@
 from flask import Flask, flash, render_template, request, redirect, url_for, send_from_directory, Response
 from flask_bootstrap import Bootstrap
 from flask_markdown import markdown
-from crawler.crawler import ToolBox, ThreadList
-import random
-import tarfile
-import time
-import os
 from flask_nav import Nav
 from flask_nav.elements import Navbar, View
+from werkzeug.utils import secure_filename
 
+import time
+import os
+import random
+import tarfile
+
+from crawler.crawler import ToolBox, ThreadList
 
 
 app = Flask(__name__)
@@ -17,7 +19,8 @@ markdown(app)
 bootstrap = Bootstrap(app)
 app.secret_key = 'super secret key'
 app.config['SESSION_TYPE'] = 'filesystem'
-
+app.config['UPLOAD_FOLDER'] = "tmp"
+MAX_CONTENT_LENGTH = 5 * 1024 * 1024  # 16MB
 
 
 nav = Nav()
@@ -59,6 +62,8 @@ def index():
             return redirect(url_for('page_mode'))
         if 'btn_pid_mode' in request.form.keys():
             return redirect(url_for('pid_mode'))
+        if 'btn_upload_json' in request.form.keys():
+            return redirect(url_for('upload_json'))
     return render_template('index.html')
 
 
@@ -80,15 +85,43 @@ def page_mode():
             return redirect(url_for('show_image1', pid=pid))
 
     return render_template('page_mode.html', pid=pid)
-    # return render_template('page_mode.html')
 
 
-@app.route('/pid_mode', methods=['GET', 'POST'])
+@app.route('/upload_json', methods=['POST', 'GET'])
+def upload_json():
+    def allowed_file(filename):
+        """
+        :param filename: file name
+        :return: 1 if type is leagal.
+        check by ALLOWED_EXTENSIONS
+        """
+        ALLOWED_EXTENSIONS = set(['json'])
+        return '.' in filename and \
+               filename.rsplit('.', 1)[1] in ALLOWED_EXTENSIONS
+
+    if 'upload' in request.form.keys() and request.method == 'POST':     # click btn-upload
+        file = request.files['file']        # get file
+        if file and allowed_file(file.filename):    # check file
+            pid = str(random.randint(0, 100000))    # set pid
+            filename = 'ori.json'                   # get a random file name
+            upload_folder = app.config['UPLOAD_FOLDER'] + "/" + pid   # set upload folder
+            os.mkdir(upload_folder)   # mkdir
+            file.save(os.path.join(upload_folder, filename))          # save file
+            return redirect(url_for('show_image1', pid=pid))
+        else:
+            flash("檔案名稱錯誤(非 json 檔案)", 'danger')
+            return render_template('upload_json.html')
+    else:
+        return render_template('upload_json.html')
+
+
+@app.route('/pid_mode', methods=['POST', 'GET'])
 def pid_mode():
     if 'goto_pid' in request.form.keys():
         return redirect(url_for('show_image1', pid=request.form['pid']))
     else:
         return render_template('pid_mode.html')
+
 
 @app.route('/show_image1/<pid>', methods=['GET', 'POST'])
 def show_image1(pid=None):
@@ -181,5 +214,5 @@ if __name__ == '__main__':
     # http_server.serve_forever()
     # monkey.patch_all()
     # gunicorn -b 127.0.0.1:5000 -w 2 main:app --timeout 2000
-    # app.run(debug=True)
-    app.run()
+    app.run(debug=True)
+    # app.run()
