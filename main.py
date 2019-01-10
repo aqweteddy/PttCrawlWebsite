@@ -62,12 +62,12 @@ def index():
 def page_mode():
     def check_menu(form):
         # check input legal
-        if form['option'] == 'radio1' and form['text_not_want'].strip() == '':
-            flash('請輸入不想要的標題內容', 'danger')
-            return False
-        if form['option'] == 'radio2' and form['text_want'].strip() == '':
-            flash('請輸入想要的標題內容', 'danger')
-            return False
+        # if form['option'] == 'radio1' and form['text_not_want'].strip() == '':
+        #     flash('請輸入不想要的標題內容', 'danger')
+        #     return False
+        # if form['option'] == 'radio2' and form['text_want'].strip() == '':
+        #     flash('請輸入想要的標題內容', 'danger')
+        #     return False
         if form['board'].strip() == '':
             flash('請輸入看板名稱', 'danger')
             return False
@@ -83,10 +83,11 @@ def page_mode():
     if request.method == 'POST':
         form = request.form
         if check_menu(form):
-            lim = '+' + form['text_want'] if form['option'] == 'radio1' \
-                else '-' + form['text_not_want']
-            if lim == '+':
-                lim = ''
+            lim = ""
+            # lim = '+' + form['text_want'] if form['option'] == 'radio1' \
+            #     else '-' + form['text_not_want']
+            # if lim == '+':
+            #     lim = ''
             board = form['board'].strip()
             pages = int(form['pages'].strip())
 
