@@ -6,7 +6,7 @@
 http://shielded-chamber-28394.herokuapp.com/
 
 ### 正確但網址不漂亮 (CCU CSIE Workstation)
-http://linux.cs.ccu.edu.tw:5001/
+http://linux.cs.ccu.edu.tw:5005/
 
 ## server
 Heroku
