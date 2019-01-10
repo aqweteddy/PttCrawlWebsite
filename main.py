@@ -58,7 +58,7 @@ def index():
 
 
 # page mode
-@app.route('/page_mode', methods=['POST', 'GET'])
+@app.route('/page_mode', methods=['POST'])
 def page_mode():
     def check_menu(form):
         # check input legal
