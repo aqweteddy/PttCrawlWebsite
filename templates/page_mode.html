@@ -20,7 +20,7 @@
     .center {
         position: absolute;
         top: calc(50% - 50px / 2); /* height divided by 2*/
-        left: calc(50% - 50px / 2); /* width divided by 2*/
+        left: calc(50%); /* width divided by 2*/
     }
     </style>
 
@@ -48,11 +48,10 @@
         <div class="row">
             <div class="col">
                 <form action="/page_mode" method="POST">
-
                     看板：
                     <input type="text" name="board">
                     <br> 頁數：
-                    <input type="number" name="pages" id="pages" min=1 max=100>
+                    <input type="number" name="pages" id="pages" min=1 max=2>
                     <br>
                     <br>
                     {#                不限制#}

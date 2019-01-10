@@ -2,7 +2,11 @@
 
 ## URL
 
-https://shielded-chamber-28394.herokuapp.com/
+#### 可能有 Response Timeout 問題 (Heroku)
+http://shielded-chamber-28394.herokuapp.com/
+
+### 正確但網址不漂亮 (CCU CSIE Workstation)
+http://linux.cs.ccu.edu.tw:5001/
 
 ## server
 Heroku
