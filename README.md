@@ -1,8 +1,17 @@
 # PttCrawlPicDownloadWebsite
 
-### URL
+## URL
 
-http://linux.cs.ccu.edu.tw:5001/
+https://shielded-chamber-28394.herokuapp.com/
+
+## server
+Heroku
+
+## feature
+
+* simple RWD
+* Picture selector
+* download progress bar
 
 ## Page
 
@@ -20,6 +29,4 @@ http://linux.cs.ccu.edu.tw:5001/
 
 1. use scrapy to crawl ptt.
 2. json file to send data.
-
-### json file format
 
