@@ -38,7 +38,6 @@
     </div>
 
     <div class="container" id="container">
-        <div id="left">
             {% for message in get_flashed_messages(with_categories=True) %}
                 <div class="alert alert-{{ message[0] }}">
                     <button type="button" class="close" data-dismiss="alert">&times;</button>
@@ -46,36 +45,40 @@
                 </div>
             {% endfor %}
 
-            <form action="/page_mode" method="POST">
-                看板：
-                <input type="text" name="board">
-                <br> 頁數：
-                <input type="number" name="pages" id="pages" min=1 max=100>
-                <br>
-                <br>
-                {#                不限制#}
+        <div class="row">
+            <div class="col">
+                <form action="/page_mode" method="POST">
+
+                    看板：
+                    <input type="text" name="board">
+                    <br> 頁數：
+                    <input type="number" name="pages" id="pages" min=1 max=100>
+                    <br>
+                    <br>
+                    {#                不限制#}
 {#                <input type="radio" name="option" id="no_lim" value="radio0" checked> 不限制#}
 {#                <br>#}
-                {#                不想看到#}
+                    {#                不想看到#}
 {#                <input type="radio" name="option" id="not_want" value="radio1">#}
 {#                不想看到 <input type="text" name="text_not_want">#}
 {#                <br>#}
-                {#只想看到#}
+                    {#只想看到#}
 {##}
 {#                <input type="radio" name="option" id="want" value="">#}
 {#                只想看到 <input type="text" name="text_want">#}
 {#                <br>#}
-                <input type="submit" class="btn btn-primary" name="start" value="開始" onclick="loading();">
-            </form>
-        </div>
-        <div id="right">
-            <h3 id="page-mode-">Page Mode 說明</h3>
-            <ul>
-                <li>本模式可根據頁數來爬取圖片，受限於效能，目前最多可爬取 10 頁。</li>
-                <li>第一頁為 各板 index 頁 (ex: <a href="https://www.ptt.cc/bbs/Baseball/">https://www.ptt.cc/bbs/Baseball/</a>
-                    <strong>index</strong> .html)
-                </li>
-            </ul>
+                    <input type="submit" class="btn btn-primary" name="start" value="開始" onclick="loading();">
+                </form>
+            </div>
+            <div class="col">
+                <h3 id="page-mode">Page Mode 說明</h3>
+                <ul>
+                    <li>本模式可根據頁數來爬取圖片，受限於效能，目前最多可爬取 10 頁。</li>
+                    <li>第一頁為 各板 index 頁 (ex: <a
+                            href="https://www.ptt.cc/bbs/Baseball/">https://www.ptt.cc/bbs/Baseball/</a><strong>index</strong>
+                        .html)
+                    </li>
+                </ul>
             <h5 id="-">各選項說明</h5>
             <ul>
                 <li>看版：輸入需要爬取的看板，請注意大小寫</li>
@@ -83,6 +86,7 @@
 {#                <li>限制項目：可以選定 <strong>希望標題出現</strong> 或 <strong>不出現</strong> 特定字詞或分類，可以有多個字詞(以空白分隔)，但不可同時只想看到和不想看到#}
                 </li>
             </ul>
+        </div>
         </div>
     </div>
 {% endblock content %}

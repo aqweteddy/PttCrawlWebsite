@@ -12,38 +12,42 @@
             <div class="row">
                 <div class="col">
                     <div class="card bg-dark text-white text-center">
-                        <img class="card-img-top" src=" {{ url_for('static', filename='page_mode_demo.png') }}"
-                             width="180px"
-                             alt="Card image cap">
-                        <div class="card-body">
-                            <h5 class="card-title">頁數模式</h5>
-                            <p class="card-text">選擇爬取的頁數開始爬蟲</p>
-                            <input type="submit" class="btn btn-outline-primary" name="btn_page_mode" value="Go">
-                        </div>
+                        <button type="submit" name="btn_page_mode" class="btn btn-dark">
+                            <img class="card-img-top"
+                                 src="{{ url_for('static', filename='page_mode_demo.png') }}"
+                                 width="180px"
+                                 alt="Card image cap">
+                            <div class="card-body">
+                                <h5 class="card-title">頁數模式</h5>
+                                <p class="card-text">選擇爬取的頁數開始爬蟲</p>
+                            </div>
+                        </button>
                     </div>
                 </div>
                 <div class="col">
                     <div class="card  bg-dark text-white text-center">
-                        <img class="card-img-top" src="{{ url_for('static', filename='pid_mode_demo.png') }}"
-                             width="180px"
-                             alt="Card image cap">
-                        <div class="card-body">
-                            <h5 class="card-title">PID 模式</h5>
-                            <p class="card-text">輸入 pid 存取歷史紀錄</p>
-                            <input type="submit" class="btn btn-outline-primary" name="btn_pid_mode" value="Go">
-                        </div>
+                        <button type="submit" class="btn btn-dark" name="btn_pid_mode">
+                            <img class="card-img-top" src="{{ url_for('static', filename='pid_mode_demo.png') }}"
+                                 width="180px"
+                                 alt="Card image cap">
+                            <div class="card-body">
+                                <h5 class="card-title">PID 模式</h5>
+                                <p class="card-text">輸入 pid 存取歷史紀錄</p>
+                            </div>
+                        </button>
                     </div>
                 </div>
                 <div class="col">
-                    <div class="card  bg-dark text-white text-center">
-                        <img class="card-img-top" src="{{ url_for('static', filename='upload_json_demo.png') }}"
-                             width="180px"
-                             alt="Card image cap">
-                        <div class="card-body">
-                            <h5 class="card-title">上傳 json</h5>
-                            <p class="card-text">根據您之前下載的 json 顯示圖片</p>
-                            <input type="submit" class="btn btn-outline-primary" name="btn_upload_json" value="Go">
-                        </div>
+                    <div class="card bg-dark text-white text-center">
+                        <button class="btn btn-dark" type="submit" name="btn_upload_json">
+                            <img class="card-img-top" src="{{ url_for('static', filename='upload_json_demo.png') }}"
+                                 width="180px"
+                                 alt="Card image cap">
+                            <div class="card-body">
+                                <h5 class="card-title">上傳 json</h5>
+                                <p class="card-text">根據您之前下載的 json 顯示圖片</p>
+                            </div>
+                        </button>
                     </div>
                 </div>
             </div>

@@ -144,7 +144,11 @@ def show_image1(pid=None):
     # get json folder
     folder = os.path.split(os.path.realpath(__file__))[0] + '/tmp/' + pid
     # create Class ToolBox use json mode
-    tb = ToolBox(jsonf="%s/%s.json" % (folder, 'ori'))
+    try:
+        tb = ToolBox(jsonf="%s/%s.json" % (folder, 'ori'))
+    except FileNotFoundError:
+        return render_template('404.html'), 404
+
     if request.method != 'POST':
         return render_template('show_image1.html', data=tb.data.get_data(), pid=pid)
 
@@ -197,7 +201,7 @@ def download(pid=None):
         return send_from_directory(folder, pid + '.json', as_attachment=True)
     # previous page
     elif 'prev_page' in request.form.keys():
-        return redirect(url_for('show_image1', pid=pid))
+        return redirect(url_for('show_imafge1', pid=pid))
 
 
 # progress bar port
