@@ -11,6 +11,7 @@ Flask==1.0.2
 Flask-Bootstrap4==4.0.2
 Flask-Markdown==0.3
 flask-nav==0.6
+gunicorn==19.9.0
 hyperlink==18.0.0
 idna==2.8
 incremental==17.5.0
