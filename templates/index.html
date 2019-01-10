@@ -1,18 +1,52 @@
 {% extends "base.html" %}
 {% block content %}
 {#    navbar#}
-    <nav aria-label="breadcrumb" style="margin-top: -20px">
+    <nav aria-label="breadcrumb">
         <ol class="breadcrumb">
             <li class="breadcrumb-item active" aria-current="page">Home</li>
         </ol>
     </nav>
 <div class="container">
-    <div align="center">
         <form action="/index" method="POST">
-            <input type="submit" class="btn btn-primary" name="btn_page_mode" value="進入頁數模式">
-            <input type="submit" class="btn btn-primary" name="btn_pid_mode" value="進入 pid 模式">
-            <input type="submit" class="btn btn-primary" name="btn_upload_json" value="上傳 json 擋">
+            <br><br>
+            <div class="row">
+                <div class="col">
+                    <div class="card bg-dark text-white text-center">
+                        <img class="card-img-top" src=" {{ url_for('static', filename='page_mode_demo.png') }}"
+                             width="180px"
+                             alt="Card image cap">
+                        <div class="card-body">
+                            <h5 class="card-title">頁數模式</h5>
+                            <p class="card-text">選擇爬取的頁數開始爬蟲</p>
+                            <input type="submit" class="btn btn-outline-primary" name="btn_page_mode" value="Go">
+                        </div>
+                    </div>
+                </div>
+                <div class="col">
+                    <div class="card  bg-dark text-white text-center">
+                        <img class="card-img-top" src="{{ url_for('static', filename='pid_mode_demo.png') }}"
+                             width="180px"
+                             alt="Card image cap">
+                        <div class="card-body">
+                            <h5 class="card-title">PID 模式</h5>
+                            <p class="card-text">輸入 pid 存取歷史紀錄</p>
+                            <input type="submit" class="btn btn-outline-primary" name="btn_pid_mode" value="Go">
+                        </div>
+                    </div>
+                </div>
+                <div class="col">
+                    <div class="card  bg-dark text-white text-center">
+                        <img class="card-img-top" src="{{ url_for('static', filename='upload_json_demo.png') }}"
+                             width="180px"
+                             alt="Card image cap">
+                        <div class="card-body">
+                            <h5 class="card-title">上傳 json</h5>
+                            <p class="card-text">根據您之前下載的 json 顯示圖片</p>
+                            <input type="submit" class="btn btn-outline-primary" name="btn_upload_json" value="Go">
+                        </div>
+                    </div>
+                </div>
+            </div>
         </form>
-    </div>
 </div>
 {% endblock %}

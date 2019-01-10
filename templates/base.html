@@ -1,13 +1,27 @@
 {% extends "bootstrap/base.html" %}
-{% block title %} Ptt 圖片批量下載 {% endblock title %}
-{% block script %}
-    <script type=text/javascript src="{{ url_for('static', filename='jquery.js') }}"></script>
-{% endblock %}
 
 {% block navbar %}
-    {{ nav.mynavbar.render() }}
+    <nav class="navbar navbar-expand-lg navbar-light bg-light">
+        <a class="navbar-brand" href="/">Ptt 圖片爬取器</a>
+        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent"
+                aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarSupportedContent">
+            <ul class="navbar-nav mr-auto">
+                <li class="nav-item">
+                    <a class="nav-link" href="/">Home</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="/page_mode">PageMode</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="/pid_mode">PidMode</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="/upload_json">JsonMode</a>
+                </li>
+            </ul>
+        </div>
+    </nav>
 {% endblock navbar %}
-
-{% block content %}
-
-{% endblock %}

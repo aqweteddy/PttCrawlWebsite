@@ -1,7 +1,7 @@
 # coding:utf-8
 from flask import Flask, flash, render_template, request, redirect, url_for, send_from_directory, Response
 from flask_bootstrap import Bootstrap
-from flask_markdown import markdown
+from flaskext.markdown import Markdown
 from flask_nav import Nav
 from flask_nav.elements import Navbar, View
 from werkzeug.utils import secure_filename
@@ -16,7 +16,7 @@ from crawler.crawler import ToolBox, ThreadList
 
 # settings
 app = Flask(__name__)
-markdown(app)
+Markdown(app)
 bootstrap = Bootstrap(app)
 app.secret_key = 'super secret key'
 app.config['SESSION_TYPE'] = 'filesystem'

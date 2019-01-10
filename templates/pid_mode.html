@@ -1,13 +1,61 @@
 {% extends "base.html" %}
 {% block content %}
-<nav aria-label="breadcrumb" style="margin-top: -20px">
+    <style>
+
+        #left {
+            width: 50%;
+            float: left;
+            vertical-align: middle;
+            top: 50%;
+        }
+
+        #right {
+            width: 50%;
+            float: right;
+            vertical-align: middle;
+            top: 50%;
+        }
+
+        .use-flexbox {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 200px;
+            height: 150px;
+            border: 1px solid #000;
+        }
+
+        .use-flexbox div {
+            width: 100px;
+            height: 50px;
+            background: #099;
+        }
+    </style>
+    <nav aria-label="breadcrumb">
     <ol class="breadcrumb">
         <li class="breadcrumb-item"><a href="/index">Home</a></li>
         <li class="breadcrumb-item active" aria-current="page">Pid Mode</li>
     </ol>
-    <form action="/pid_mode" method="post">
-        <input type="text" name="pid">
-        <input type="submit" name="goto_pid" class="btn btn-primary" value="確認">
-    </form>
-</nav>
+    </nav>
+    <div class="container">
+        <div id="left">
+            <h3>輸入 PID</h3>
+            <span class="badge">New Mode</span><br><br>
+            <form action="/pid_mode" method="post">
+                <input type="text" name="pid">
+                <input type="submit" name="goto_pid" class="btn btn-primary" value="確認">
+            </form>
+        </div>
+        <div id="right">
+            <ul>
+                <li>如何取得 PID?
+                    <ol>
+                        <li>網址處 / 最後幾個數字</li>
+                        <li>在 <code>顯示圖片</code> 處，選取複製PID</li>
+                    </ol>
+                </li>
+                <li>此模式為存取 Server 端已儲存的資料，若後端暫存資料已清除，則無法使用</li>
+            </ul>
+        </div>
+    </div>
 {% endblock %}
