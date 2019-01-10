@@ -7,27 +7,46 @@
     }
 </style>
 {% block content %}
-    <div class="container">
-        {% for message in get_flashed_messages(with_categories=True) %}
-            <div class="alert alert-{{ message[0] }}">
-                <button type="button" class="close" data-dismiss="alert">&times;</button>
-                {{ message[1] }}
+    <nav aria-label="breadcrumb">
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item"><a href="/index">Home</a></li>
+            <li class="breadcrumb-item active" aria-current="page">Json Mode</li>
+        </ol>
+    </nav>
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col">
+                {% for message in get_flashed_messages(with_categories=True) %}
+                    <div class="alert alert-{{ message[0] }}">
+                        <button type="button" class="close" data-dismiss="alert">&times;</button>
+                        {{ message[1] }}
+                    </div>
+                {% endfor %}
+                <form method="POST" enctype="multipart/form-data">
+                    {#        <input type="file" name="file">#}
+                    <div class="input-group">
+                        <div class="input-group-prepend">
+                            <span class="input-group-text" id="inputGroupFileAddon01">Upload</span>
+                        </div>
+                        <div class="custom-file">
+                            <input type="file" class="custom-file-input" id="inputGroupFile01"
+                                   aria-describedby="inputGroupFileAddon01">
+                            <label class="custom-file-label" for="inputGroupFile01">Choose file</label>
+                        </div>
+                    </div>
+                    <br>
+                    <input type="submit" value="Upload" name="upload"
+                           class="btn btn-primary center">
+                </form>
             </div>
-        {% endfor %}
-
-        <form method="POST" enctype="multipart/form-data">
-            {#        <input type="file" name="file">#}
-            <div class="input-group">
-                <div class="input-group-prepend">
-                    <span class="input-group-text" id="inputGroupFileAddon01">Upload</span>
-                </div>
-                <div class="custom-file">
-                    <input type="file" class="custom-file-input" id="inputGroupFile01"
-                           aria-describedby="inputGroupFileAddon01">
-                    <label class="custom-file-label" for="inputGroupFile01">Choose file</label>
-                </div>
+            <div class="col">
+                <h2>Json Upload</h2>
+                <h3>如何使用</h3>
+                <ul>
+                    <li>選擇以前下載的 json</li>
+                    <li>點擊上傳就可以顯示圖片</li>
+                </ul>
             </div>
-            <input type="submit" value="Upload" name="upload" class="btn btn-primary center">
-        </form>
+        </div>
     </div>
 {% endblock %}

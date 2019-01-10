@@ -4,7 +4,6 @@ from flask_bootstrap import Bootstrap
 from flaskext.markdown import Markdown
 from flask_nav import Nav
 from flask_nav.elements import Navbar, View
-from werkzeug.utils import secure_filename
 
 import time
 import os
@@ -111,7 +110,11 @@ def upload_json():
                filename.rsplit('.', 1)[1] in ALLOWED_EXTENSIONS
 
     if 'upload' in request.form.keys() and request.method == 'POST':     # click btn-upload
-        file = request.files['file']        # get file
+        try:
+            file = request.files['file']        # get file
+        except KeyError:
+            flash("沒有選擇檔案 或是檔案格式錯誤", 'danger')
+            return render_template('upload_json.html')
         if file and allowed_file(file.filename):    # check file
             pid = str(random.randint(0, 100000))    # set pid
             filename = 'ori.json'                   # get a random file name
