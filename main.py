@@ -82,10 +82,10 @@ def page_mode():
                 ToolBox(board=board, pages=pages, title_lim=lim.split(' '), file=folder + '/ori.json')
 
             # crawling, save json file.
-            executor.submit(
-                execute
-            )
-            print('PASS')
+            # executor.submit(
+            #     execute
+            # )
+            # print('PASS')
             return redirect(url_for('show_image1', pid=pid))
 
     return render_template('page_mode.html', pid=pid)
