@@ -81,6 +81,7 @@ def page_mode():
             def execute():
                 ToolBox(board=board, pages=pages, title_lim=lim.split(' '), file=folder + '/ori.json')
 
+            ToolBox(board=board, pages=pages, titlego_lim=lim.split(' '), file=folder + '/ori.json')
             # crawling, save json file.
             # executor.submit(
             #     execute
