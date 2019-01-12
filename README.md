@@ -8,7 +8,7 @@
 http://shielded-chamber-28394.herokuapp.com/
 
 ### 正確但網址不漂亮 (CCU CSIE Workstation)
-http://linux.cs.ccu.edu.tw:5005/
+http://linux.cs.ccu.edu.tw:5006/
 
 ## screen shot
 
