@@ -2,8 +2,10 @@
 from flask import Flask, flash, render_template, request, redirect, url_for, send_from_directory, Response
 from flask_bootstrap import Bootstrap
 from flaskext.markdown import Markdown
-from flask_nav import Nav
-from flask_nav.elements import Navbar, View
+# from flask_nav import Nav
+# from flask_nav.elements import Navbar, View
+
+from concurrent.futures import ThreadPoolExecutor
 
 import time
 import os
@@ -14,6 +16,8 @@ from crawler.crawler import ToolBox, ThreadList
 
 
 # settings
+executor = ThreadPoolExecutor(2)
+
 app = Flask(__name__)
 Markdown(app)
 bootstrap = Bootstrap(app)
@@ -21,22 +25,6 @@ app.secret_key = 'super secret key'
 app.config['SESSION_TYPE'] = 'filesystem'
 app.config['UPLOAD_FOLDER'] = "tmp"
 MAX_CONTENT_LENGTH = 5 * 1024 * 1024  # Upload json length (5mb)
-
-# nav Bar
-nav = Nav()
-
-
-@nav.navigation()
-def mynavbar():
-    return Navbar(
-        'Ptt 圖片爬取器',
-        View('Home', 'index'),
-        View('圖片模式', 'page_mode'),
-        View('關於我', 'aboutme')
-    )
-
-
-nav.init_app(app)
 
 
 # home page
@@ -90,8 +78,14 @@ def page_mode():
             board = form['board'].strip()
             pages = int(form['pages'].strip())
 
+            def execute():
+                ToolBox(board=board, pages=pages, title_lim=lim.split(' '), file=folder + '/ori.json')
+
             # crawling, save json file.
-            ToolBox(board=board, pages=pages, title_lim=lim.split(' '), file=folder + '/ori.json')
+            executor.submit(
+                execute
+            )
+            print('PASS')
             return redirect(url_for('show_image1', pid=pid))
 
     return render_template('page_mode.html', pid=pid)
