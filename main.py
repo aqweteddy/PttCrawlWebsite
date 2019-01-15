@@ -44,6 +44,14 @@ def index():
     return render_template('index.html')
 
 
+@app.route('/crawling', methods=['GET', 'POST'])
+def crawling():
+    def crawl():
+        import time
+
+        time.sleep(2)
+
+
 # page mode
 @app.route('/page_mode', methods=['POST', 'GET'])
 def page_mode():
@@ -78,16 +86,12 @@ def page_mode():
             board = form['board'].strip()
             pages = int(form['pages'].strip())
 
-            def execute():
-                ToolBox(board=board, pages=pages, title_lim=lim.split(' '), file=folder + '/ori.json')
-
-            ToolBox(board=board, pages=pages, title_lim=lim.split(' '), file=folder + '/ori.json')
+            # ToolBox(board=board, pages=pages, title_lim=lim.split(' '), file=folder + '/ori.json')
             # crawling, save json file.
-            # executor.submit(
-            #     execute
-            # )
-            # print('PASS')
-            return redirect(url_for('show_image1', pid=pid))
+            executor.submit(
+                lambda: ToolBox(board=board, pages=pages, title_lim=lim.split(' '), file=folder + '/ori.json')
+            )
+            return
 
     return render_template('page_mode.html', pid=pid)
 
@@ -199,7 +203,7 @@ def download(pid=None):
         return send_from_directory(folder, pid + '.json', as_attachment=True)
     # previous page
     elif 'prev_page' in request.form.keys():
-        return redirect(url_for('show_imafge1', pid=pid))
+        return redirect(url_for('show_image1', pid=pid))
 
 
 # progress bar port

@@ -1,22 +1,6 @@
 {% extends "base.html" %}
 {% block content %}
-    <script type="text/javascript">
-    function loading() {
-        $("#loading").show();
-        $("#container").hide();
-    }
-    </script>
     <style type="text/css">
-    #left {
-        width: 50%;
-        float: left;
-        align: center;
-    }
-    #right {
-        width: 50%;
-        float: right;
-    }
-
     .center {
         position: absolute;
         top: calc(50% - 50px / 2); /* height divided by 2*/
@@ -30,12 +14,18 @@
             <li class="breadcrumb-item active" aria-current="page">Page Mode</li>
         </ol>
     </nav>
+{#    <script>#}
+{#        var source = new EventSource("/crawling");#}
+{#        source.onmessage = function (event) {#}
+{#            console.log(event.data)#}
+{#        }#}
+{#    </script>#}
 
-    <div id="loading" style="display:none" class="center">
-        <img src="{{ url_for('static', filename='loading.gif') }}" alt="Loading">
-        <br>
-        正在爬取資料...
-    </div>
+{#    <div id="loading" style="display:none" class="center">#}
+{#        <img src="{{ url_for('static', filename='loading.gif') }}" alt="Loading">#}
+{#        <br>#}
+{#        正在爬取資料...#}
+{#    </div>#}
 
     <div class="container" id="container">
             {% for message in get_flashed_messages(with_categories=True) %}
@@ -44,7 +34,6 @@
                     {{ message[1] }}
                 </div>
             {% endfor %}
-
         <div class="row">
             <div class="col">
                 <form action="/page_mode" method="POST">
@@ -66,7 +55,7 @@
 {#                <input type="radio" name="option" id="want" value="">#}
 {#                只想看到 <input type="text" name="text_want">#}
 {#                <br>#}
-                    <input type="submit" class="btn btn-primary" name="start" value="開始" onclick="loading();">
+                    <input type="submit" class="btn btn-primary" name="start" value="開始">
                 </form>
             </div>
             <div class="col">
@@ -88,4 +77,5 @@
         </div>
         </div>
     </div>
+    {% endif %}
 {% endblock content %}
