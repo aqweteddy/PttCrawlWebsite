@@ -79,11 +79,14 @@ class PttSpiderByPage(scrapy.Spider):
             self.item['category'] = 'not found'
         except:
             self.item['category'] = 'err'
-
         self.item['text'] = resp.xpath(
             '//div[@id="main-content"]/text()')[0].extract()
-        self.item['author'] = resp.xpath(
-            '//div[@class="article-metaline"]/span[text()="作者"]/following-sibling::span[1]/text()')[0].extract()
+        try:
+            self.item['author'] = resp.xpath(
+                '//div[@class="article-metaline"]/span[text()="作者"]/following-sibling::span[1]/text()')[0].extract()
+        except IndexError:
+            self.item['author'] = ""
+
         self.item['img_link'] = []
         for link in resp.xpath('//div[@id="main-content"]/a/@href'):
             tmp = link.extract()

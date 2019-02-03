@@ -1,6 +1,22 @@
 {% extends "base.html" %}
 {% block content %}
+    <script type="text/javascript">
+        function loading() {
+            $("#loading").show();
+            $("#container").hide();
+        }
+    </script>
     <style type="text/css">
+        #left {
+            width: 50%;
+            float: left;
+            align: center;
+        }
+
+        #right {
+            width: 50%;
+            float: right;
+        }
     .center {
         position: absolute;
         top: calc(50% - 50px / 2); /* height divided by 2*/
@@ -14,18 +30,12 @@
             <li class="breadcrumb-item active" aria-current="page">Page Mode</li>
         </ol>
     </nav>
-{#    <script>#}
-{#        var source = new EventSource("/crawling");#}
-{#        source.onmessage = function (event) {#}
-{#            console.log(event.data)#}
-{#        }#}
-{#    </script>#}
 
-{#    <div id="loading" style="display:none" class="center">#}
-{#        <img src="{{ url_for('static', filename='loading.gif') }}" alt="Loading">#}
-{#        <br>#}
-{#        正在爬取資料...#}
-{#    </div>#}
+    <div id="loading" style="display:none" class="center">
+        <img src="{{ url_for('static', filename='loading.gif') }}" alt="Loading">
+        <br>
+        正在爬取資料...
+    </div>
 
     <div class="container" id="container">
             {% for message in get_flashed_messages(with_categories=True) %}
@@ -34,6 +44,7 @@
                     {{ message[1] }}
                 </div>
             {% endfor %}
+
         <div class="row">
             <div class="col">
                 <form action="/page_mode" method="POST">
@@ -43,19 +54,15 @@
                     <input type="number" name="pages" id="pages" min=1 max=2>
                     <br>
                     <br>
-                    {#                不限制#}
-{#                <input type="radio" name="option" id="no_lim" value="radio0" checked> 不限制#}
-{#                <br>#}
-                    {#                不想看到#}
-{#                <input type="radio" name="option" id="not_want" value="radio1">#}
-{#                不想看到 <input type="text" name="text_not_want">#}
-{#                <br>#}
-                    {#只想看到#}
-{##}
-{#                <input type="radio" name="option" id="want" value="">#}
-{#                只想看到 <input type="text" name="text_want">#}
-{#                <br>#}
-                    <input type="submit" class="btn btn-primary" name="start" value="開始">
+                    <input type="radio" name="option" id="no_lim" value="radio0" checked> 不限制
+                    <br>
+                    <input type="radio" name="option" id="not_want" value="radio1">
+                    不想看到 <input type="text" name="text_not_want">
+                    <br>
+                    <input type="radio" name="option" id="want" value="radio2">
+                    只想看到 <input type="text" name="text_want">
+                    <br>
+                    <input type="submit" class="btn btn-primary" name="start" value="開始" onclick="loading();">
                 </form>
             </div>
             <div class="col">
@@ -71,11 +78,10 @@
             <ul>
                 <li>看版：輸入需要爬取的看板，請注意大小寫</li>
                 <li>頁數：所需爬取的頁數</li>
-{#                <li>限制項目：可以選定 <strong>希望標題出現</strong> 或 <strong>不出現</strong> 特定字詞或分類，可以有多個字詞(以空白分隔)，但不可同時只想看到和不想看到#}
-                </li>
+                <li>限制項目：可以選定 <strong>希望標題出現</strong> 或 <strong>不出現</strong> 特定字詞或分類，可以有多個字詞(以空白分隔)，但不可同時只想看到和不想看到
+
             </ul>
         </div>
         </div>
     </div>
-    {% endif %}
 {% endblock content %}

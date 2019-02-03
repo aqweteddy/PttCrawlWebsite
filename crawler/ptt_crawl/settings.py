@@ -14,7 +14,7 @@ BOT_NAME = 'ptt_crawl'
 SPIDER_MODULES = ['ptt_crawl.spiders']
 NEWSPIDER_MODULE = 'ptt_crawl.spiders'
 FEED_EXPORT_ENCODING = 'utf-8' 
-DOWNLOAD_DELAY = 1.25
+DOWNLOAD_DELAY = 0.05
 # Crawl responsibly by identifying yourself (and your website) on the user-agent
 #USER_AGENT = 'ptt_crawl (+http://www.yourdomain.com)'
 
@@ -75,7 +75,7 @@ LOG_LEVEL = 'INFO'
 # See https://doc.scrapy.org/en/latest/topics/autothrottle.html
 #AUTOTHROTTLE_ENABLED = True
 # The initial download delay
-#AUTOTHROTTLE_START_DELAY = 5
+AUTOTHROTTLE_START_DELAY = 1
 # The maximum download delay to be set in case of high latencies
 #AUTOTHROTTLE_MAX_DELAY = 60
 # The average number of requests Scrapy should be sending in parallel to

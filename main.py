@@ -1,11 +1,18 @@
 # coding:utf-8
+
+
+"""
+MAC OS X
+python 3.6 conda.
+IDE: pyCharm
+"""
+
+
 from flask import Flask, flash, render_template, request, redirect, url_for, send_from_directory, Response
 from flask_bootstrap import Bootstrap
-from flaskext.markdown import Markdown
-# from flask_nav import Nav
-# from flask_nav.elements import Navbar, View
+import json
 
-from concurrent.futures import ThreadPoolExecutor
+# from concurrent.futures import ThreadPoolExecutor
 
 import time
 import os
@@ -14,12 +21,9 @@ import tarfile
 
 from crawler.crawler import ToolBox, ThreadList
 
-
+FOLDER = os.path.split(os.path.realpath(__file__))[0] + '/tmp'
 # settings
-executor = ThreadPoolExecutor(2)
-
 app = Flask(__name__)
-Markdown(app)
 bootstrap = Bootstrap(app)
 app.secret_key = 'super secret key'
 app.config['SESSION_TYPE'] = 'filesystem'
@@ -44,25 +48,17 @@ def index():
     return render_template('index.html')
 
 
-@app.route('/crawling', methods=['GET', 'POST'])
-def crawling():
-    def crawl():
-        import time
-
-        time.sleep(2)
-
-
 # page mode
 @app.route('/page_mode', methods=['POST', 'GET'])
 def page_mode():
     def check_menu(form):
         # check input legal
-        # if form['option'] == 'radio1' and form['text_not_want'].strip() == '':
-        #     flash('請輸入不想要的標題內容', 'danger')
-        #     return False
-        # if form['option'] == 'radio2' and form['text_want'].strip() == '':
-        #     flash('請輸入想要的標題內容', 'danger')
-        #     return False
+        if form['option'] == 'radio1' and form['text_not_want'].strip() == '':
+            flash('請輸入不想要的標題內容', 'danger')
+            return False
+        if form['option'] == 'radio2' and form['text_want'].strip() == '':
+            flash('請輸入想要的標題內容', 'danger')
+            return False
         if form['board'].strip() == '':
             flash('請輸入看板名稱', 'danger')
             return False
@@ -73,25 +69,21 @@ def page_mode():
 
     # get pid
     pid = str(random.randint(0, 100000))
-    # get folder
-    folder = os.path.split(os.path.realpath(__file__))[0] + '/tmp/' + pid
+    # get FOLDER
     if request.method == 'POST':
         form = request.form
         if check_menu(form):
-            lim = ""
-            # lim = '+' + form['text_want'] if form['option'] == 'radio1' \
-            #     else '-' + form['text_not_want']
-            # if lim == '+':
-            #     lim = ''
+            if form['option'] == 'radio1':
+                lim = '- ' + form['text_not_want']
+            elif form['option'] == 'radio2':
+                lim = '+ ' + form['text_want']
+            else:
+                lim = '+ '
             board = form['board'].strip()
             pages = int(form['pages'].strip())
+            ToolBox(board=board, pages=pages, title_lim=lim.split(' '), file=FOLDER + '/' + str(pid) +'/ori.json')
 
-            # ToolBox(board=board, pages=pages, title_lim=lim.split(' '), file=folder + '/ori.json')
-            # crawling, save json file.
-            executor.submit(
-                lambda: ToolBox(board=board, pages=pages, title_lim=lim.split(' '), file=folder + '/ori.json')
-            )
-            return
+            return redirect(url_for('show_image1', pid=pid))
 
     return render_template('page_mode.html', pid=pid)
 
@@ -117,7 +109,7 @@ def upload_json():
         if file and allowed_file(file.filename):    # check file
             pid = str(random.randint(0, 100000))    # set pid
             filename = 'ori.json'                   # get a random file name
-            upload_folder = app.config['UPLOAD_FOLDER'] + "/" + pid   # set upload folder
+            upload_folder = app.config['UPLOAD_FOLDER'] + "/" + pid   # set upload FOLDER
             os.mkdir(upload_folder)   # mkdir
             file.save(os.path.join(upload_folder, filename))          # save file
             return redirect(url_for('show_image1', pid=pid))
@@ -144,15 +136,17 @@ def show_image1(pid=None):
         return redirect(url_for('index'))
 
     # get json folder
-    folder = os.path.split(os.path.realpath(__file__))[0] + '/tmp/' + pid
+
     # create Class ToolBox use json mode
     try:
-        tb = ToolBox(jsonf="%s/%s.json" % (folder, 'ori'))
-    except FileNotFoundError:
+        tb = ToolBox(jsonf="%s/%s.json" % (FOLDER + '/' + str(pid), 'ori'))
+    except FileNotFoundError as e:
         return render_template('404.html'), 404
+    except json.decoder.JSONDecodeError:
+        return render_template("show_image1.html", data=[], pid=pid)
 
     if request.method != 'POST':
-        return render_template('show_image1.html', data=tb.data.get_data(), pid=pid)
+        return render_template('show_image1.html', data=tb.get_data(), pid=pid)
 
     # split require
     form = dict()
@@ -169,12 +163,12 @@ def show_image1(pid=None):
     # save new .json
     tmp_data = []
     for a, b in form.items():
-        tmp_data.append(tb.data[a].copy())
+        tmp_data.append(tb[a].copy())
         tmp_data[-1]['img_link'] = []
         for i in b:
-            tmp_data[-1]['img_link'].append(tb.data[a]['img_link'][i])
-    tb.data = ThreadList(tmp_data.copy())
-    tb.save_json('%s/%s.json' % (folder, pid))
+            tmp_data[-1]['img_link'].append(tb[a]['img_link'][i])
+    tb = ToolBox(copy_data=tmp_data)
+    tb.save_json('%s/%s/%s.json' % (FOLDER, pid, pid))
 
     # download image button
     if 'download_image' in request.form.keys():
@@ -182,7 +176,7 @@ def show_image1(pid=None):
 
     # download json button
     elif 'download_json' in request.form.keys():
-        return send_from_directory(folder, pid + '.json', as_attachment=True)
+        return send_from_directory(FOLDER + '/' + pid, pid + '.json', as_attachment=True)
 
 
 # download progress page
@@ -190,17 +184,14 @@ def show_image1(pid=None):
 def download(pid=None):
     if not pid:
         return redirect(url_for('index'))
-    # get folder
-    folder = os.path.split(os.path.realpath(__file__))[0] + '/tmp/' + pid
-
     if request.method != 'POST':
         return render_template('download.html', pid=pid)
     # download image
     if 'start_download' in request.form.keys():
-        return send_from_directory(folder, pid + '.tar.gz', as_attachment=True)
+        return send_from_directory(FOLDER + '/' + pid, pid + '.tar.gz', as_attachment=True)
     # download json
     elif 'json_download' in request.form.keys():
-        return send_from_directory(folder, pid + '.json', as_attachment=True)
+        return send_from_directory(FOLDER + '/' + pid, pid + '.json', as_attachment=True)
     # previous page
     elif 'prev_page' in request.form.keys():
         return redirect(url_for('show_image1', pid=pid))
@@ -210,17 +201,16 @@ def download(pid=None):
 @app.route('/progress/<pid>', methods=['GET', 'POST'])
 def progress(pid):
     # get path
-    folder = os.path.split(os.path.realpath(__file__))[0] + '/tmp/' + pid
     # create Class ToolBox
-    tb = ToolBox(jsonf="%s/%s.json" % (folder, pid))
+    tb = ToolBox(jsonf="%s/%s/%s.json" % (FOLDER, pid, pid))
 
     def downloading():
-        # source folder
-        source_dir = '%s/pictures%s' % (folder, pid)
+        # source FOLDER
+        source_dir = '%s/%s/pictures%s' % (FOLDER, pid, pid)
         # target file
-        output = '%s/%s.tar.gz' % (folder, pid)
+        output = '%s/%s/%s.tar.gz' % (FOLDER, pid, pid)
         # total length of select data
-        num = len(tb.data)
+        num = len(tb)
         i = 0
 
         # download image to server
@@ -258,4 +248,3 @@ if __name__ == '__main__':
     # monkey.patch_all()
     # gunicorn -b 127.0.0.1:5000 -w 2 main:app --timeout 2000
     app.run(debug=True)
-    # app.run()
