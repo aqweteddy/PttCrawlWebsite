@@ -7,22 +7,14 @@
 
 http://shielded-chamber-28394.herokuapp.com/
 
-### 正確但網址不漂亮 (CCU CSIE Workstation)
-http://linux.cs.ccu.edu.tw:5006/
-
 ## screen shot
 
 ![](https://i.imgur.com/ysuPzwT.jpg)
 ![](https://i.imgur.com/InDvRCF.png)
 ![](https://i.imgur.com/leWZ5oI.png)
 ## server
+
 Heroku
-
-## feature
-
-* simple RWD
-* Picture selector
-* download progress bar
 
 ## Page
 
