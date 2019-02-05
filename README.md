@@ -5,7 +5,7 @@
 #### 可能有 Response Timeout 問題 (Heroku)
 * 由於8小時沒使用會關機的規則，所以可能開啟較慢
 
-http://shielded-chamber-28394.herokuapp.com/
+http://pttcrawlimage.herokuapp.com/
 
 ## screen shot
 
