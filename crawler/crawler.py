@@ -33,14 +33,14 @@ class ThreadList(list):
         -> [2] : URL
         -> [3] : text
         """
-        return [{'title': th['title'], 'img_link': th['img_link'], 'id': j, 'url': th['url'], 'text': th['text']}
+        return [{'title': th['title'], 'img_link': th['img_link'], 'id': j, 'url': th['url'], 'text': th.get('text', '0')}
                 for j, th in enumerate(self)]
 
 # scrapy crawl ptt -o beauty.json -a board=Beauty -a  pages=3
 
 
 class ToolBox(ThreadList):
-    def __init__(self, board='Gossiping', pages=1, file='tmp.json', title_lim=[], jsonf=None, copy_data=[]):
+    def __init__(self, board='Gossiping', pages=1, file='tmp.json', title_lim=[], jsonf=None, copy_data=[], simple_mode=True):
         """
         construct a Class and crawl.
         :param board: crawled board
@@ -54,7 +54,7 @@ class ToolBox(ThreadList):
             return
         os.chdir(os.path.split(os.path.realpath(__file__))[0])
         print(os.getcwd())
-        com = 'scrapy crawl ptt '
+        com = 'scrapy crawl ptt ' if not simple_mode else 'scrapy crawl ptt_url '
         # output json file name
         com += '-o %s ' % (file)
         # page

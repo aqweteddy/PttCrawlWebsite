@@ -1,87 +1,94 @@
 {% extends "base.html" %}
 {% block content %}
-    <script type="text/javascript">
-        function loading() {
-            $("#loading").show();
-            $("#container").hide();
-        }
-    </script>
-    <style type="text/css">
-        #left {
-            width: 50%;
-            float: left;
-            align: center;
-        }
-
-        #right {
-            width: 50%;
-            float: right;
-        }
-    .center {
-        position: absolute;
-        top: calc(50% - 50px / 2); /* height divided by 2*/
-        left: calc(50%); /* width divided by 2*/
+<script type="text/javascript">
+    function loading() {
+        $("#loading").show();
+        $("#container").hide();
     }
-    </style>
+</script>
+<style type="text/css">
+    #left {
+        width: 50%;
+        float: left;
+        align: center;
+    }
 
-    <nav aria-label="breadcrumb">
-        <ol class="breadcrumb">
-            <li class="breadcrumb-item"><a href="/index">Home</a></li>
-            <li class="breadcrumb-item active" aria-current="page">Page Mode</li>
-        </ol>
-    </nav>
+    #right {
+        width: 50%;
+        float: right;
+    }
 
-    <div id="loading" style="display:none" class="center">
+    .center {
+        display: flex;
+        justify-content: center;
+        align-content: center;
+        margin-top: 200px;
+    }
+</style>
+
+<nav aria-label="breadcrumb">
+    <ol class="breadcrumb">
+        <li class="breadcrumb-item"><a href="/index">Home</a></li>
+        <li class="breadcrumb-item active" aria-current="page">Page Mode</li>
+    </ol>
+</nav>
+
+<div id="loading" style="display:none" class="center">
         <img src="{{ url_for('static', filename='loading.gif') }}" alt="Loading">
-        <br>
-        正在爬取資料...
+</div>
+
+<div class="container" id="container">
+    {% for message in get_flashed_messages(with_categories=True) %}
+    <div class="alert alert-{{ message[0] }}">
+        <button type="button" class="close" data-dismiss="alert">&times;</button>
+        {{ message[1] }}
     </div>
+    {% endfor %}
 
-    <div class="container" id="container">
-            {% for message in get_flashed_messages(with_categories=True) %}
-                <div class="alert alert-{{ message[0] }}">
-                    <button type="button" class="close" data-dismiss="alert">&times;</button>
-                    {{ message[1] }}
-                </div>
-            {% endfor %}
-
-        <div class="row">
-            <div class="col">
-                <form action="/page_mode" method="POST">
-                    看板：
-                    <input type="text" name="board">
-                    <br> 頁數：
-                    <input type="number" name="pages" id="pages" min=1 max=10>
-                    <br>
-                    <br>
-                    <input type="radio" name="option" id="no_lim" value="radio0" checked> 不限制
-                    <br>
-                    <input type="radio" name="option" id="not_want" value="radio1">
-                    不想看到 <input type="text" name="text_not_want">
-                    <br>
-                    <input type="radio" name="option" id="want" value="radio2">
-                    只想看到 <input type="text" name="text_want">
-                    <br>
-                    <input type="submit" class="btn btn-primary" name="start" value="開始" onclick="loading();">
-                </form>
-            </div>
-            <div class="col">
-                <h3 id="page-mode">Page Mode 說明</h3>
-                <ul>
-                    <li>本模式可根據頁數來爬取圖片，受限於效能，目前最多可爬取 10 頁。</li>
-                    <li>第一頁為 各板 index 頁 (ex: <a
-                            href="https://www.ptt.cc/bbs/Baseball/">https://www.ptt.cc/bbs/Baseball/</a><strong>index</strong>
-                        .html)
-                    </li>
-                </ul>
+    <div class="row">
+        <div class="col">
+            <form action="/page_mode" method="POST">
+                看板：
+                <input type="text" name="board">
+                <br> 頁數：
+                <input type="number" name="pages" id="pages" min=1 max=20>
+                <br>
+                <hr>
+                <input type="radio" name="option" id="no_lim" value="radio0" checked> 不限制
+                <br>
+                <input type="radio" name="option" id="not_want" value="radio1">
+                不想看到 <input type="text" name="text_not_want">
+                <br>
+                <input type="radio" name="option" id="want" value="radio2">
+                只想看到 <input type="text" name="text_want">
+                <br>
+                <hr>
+                是否使用簡單模式：
+                是 <input type="radio" name="option1" id="simple" value="radio3" checked>
+                否 <input type="radio" name="option1" id="full" value="radio4">
+                <br>
+                <hr>
+                <input type="submit" class="btn btn-primary" name="start" value="開始" onclick="loading();">
+            </form>
+        </div>
+        <div class="col">
+            <h3 id="page-mode">Page Mode 說明</h3>
+            <ul>
+                <li>本模式可根據頁數來爬取圖片，受限於效能，目前最多可爬取 20 頁。</li>
+                <li>第一頁為 各板 index 頁 (ex: <a
+                        href="https://www.ptt.cc/bbs/Baseball/">https://www.ptt.cc/bbs/Baseball/</a><strong>index</strong>
+                    .html)
+                </li>
+            </ul>
             <h5 id="-">各選項說明</h5>
             <ul>
                 <li>看版：輸入需要爬取的看板，請注意大小寫</li>
                 <li>頁數：所需爬取的頁數</li>
                 <li>限制項目：可以選定 <strong>希望標題出現</strong> 或 <strong>不出現</strong> 特定字詞或分類，可以有多個字詞(以空白分隔)，但不可同時只想看到和不想看到
                 <li>PS: 頁數只有在電腦版上才能看到，一頁約20篇文章 </li>
+                <li>簡單模式：只爬取標題、圖片連結，不爬取推文、內文，可加快速速度，但是 json 檔將有缺漏</li>
             </ul>
         </div>
-        </div>
     </div>
+</div>
 {% endblock content %}

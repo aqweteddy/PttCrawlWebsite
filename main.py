@@ -25,7 +25,7 @@ FOLDER = os.path.split(os.path.realpath(__file__))[0] + '/tmp'
 # settings
 app = Flask(__name__)
 bootstrap = Bootstrap(app)
-app.secret_key = 'super secret key'
+app.secret_key = 'ldjfkl3kljcik3k'
 app.config['SESSION_TYPE'] = 'filesystem'
 app.config['UPLOAD_FOLDER'] = "tmp"
 MAX_CONTENT_LENGTH = 5 * 1024 * 1024  # Upload json length (5mb)
@@ -79,9 +79,11 @@ def page_mode():
                 lim = '+ ' + form['text_want']
             else:
                 lim = '+ '
+            simple_flag = True if form['option1'] == 'radio3' else False
+
             board = form['board'].strip()
             pages = int(form['pages'].strip())
-            ToolBox(board=board, pages=pages, title_lim=lim.split(' '), file=FOLDER + '/' + str(pid) +'/ori.json')
+            ToolBox(board=board, pages=pages, title_lim=lim.split(' '), file=FOLDER + '/' + str(pid) +'/ori.json', simple_mode=simple_flag)
 
             return redirect(url_for('show_image1', pid=pid))
 
