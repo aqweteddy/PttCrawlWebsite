@@ -2,19 +2,19 @@
 
 ## URL
 
-#### 可能有 Response Timeout 問題 (Heroku)
 * 由於8小時沒使用會關機的規則，所以可能開啟較慢
 
 http://pttcrawlimage.herokuapp.com/
 
 ## screen shot
 
-![](https://i.imgur.com/ysuPzwT.jpg)
-![](https://i.imgur.com/InDvRCF.png)
-![](https://i.imgur.com/leWZ5oI.png)
+![](https://i.imgur.com/eliWgl1.jpg)
+![](https://i.imgur.com/cWM3VHD.jpg)
+![](https://i.imgur.com/gXYV4er.png)
+
 ## server
 
-Heroku
+* Heroku
 
 ## Page
 
@@ -24,7 +24,7 @@ Heroku
     2. json mode
     3. pid mode
 3. 圖片顯示
-4. 下載頁面 
+4. 下載頁面
 5. 關於我
 6. 404 not found
 
@@ -33,5 +33,3 @@ Heroku
 
 1. use scrapy to crawl ptt.
 2. json file to send data.
-
-
